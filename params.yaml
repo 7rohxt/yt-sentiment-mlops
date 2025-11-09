@@ -1,0 +1,8 @@
+data_ingestion:
+  source_url: "https://raw.githubusercontent.com/Himanshu-1703/reddit-sentiment-analysis/refs/heads/main/data/reddit.csv"
+  raw_data_path: "data/raw/reddit_raw.csv"
+
+data_preprocessing:
+  processed_data_path: "data/processed/reddit_preprocessed.csv"
+  test_size: 0.2
+  random_state: 42
