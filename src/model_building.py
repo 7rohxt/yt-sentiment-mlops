@@ -9,6 +9,13 @@ import mlflow
 import mlflow.sklearn
 import joblib
 import logging
+from dotenv import load_dotenv
+
+load_dotenv() 
+
+# --- MLflow setup ---
+mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
+mlflow.set_experiment("Final_Model")
 
 # --- Logging setup ---
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -51,15 +58,14 @@ def main():
         y_pred = model.predict(X_test_vec)
         acc = accuracy_score(y_test, y_pred)
         f1 = f1_score(y_test, y_pred, average="weighted")
-
-        logger.info(f"Training complete | Accuracy: {acc:.4f}, F1 Score: {f1:.4f}")
+        logger.info(f"✅ Training complete | Accuracy: {acc:.4f}, F1 Score: {f1:.4f}")
 
         # --- MLflow Tracking ---
-        mlflow.set_experiment("Model_Building")
         with mlflow.start_run():
             mlflow.log_params(cfg["model_params"])
-            mlflow.log_metric("accuracy", acc)
-            mlflow.log_metric("f1_score", f1)
+            mlflow.log_param("max_features", cfg["max_features"])
+            mlflow.log_param("random_state", cfg["random_state"])
+            mlflow.log_metrics({"accuracy": acc, "f1_score": f1})
             mlflow.sklearn.log_model(model, artifact_path="LinearSVC_model")
 
         # --- Save artifacts locally ---
