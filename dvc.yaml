@@ -36,3 +36,20 @@ stages:
     outs:
       - models/linearsvc_model.pkl
       - models/tfidf_vectorizer.pkl
+
+  model_evaluation:
+    cmd: python src/model_evaluation.py
+    deps:
+      - src/model_evaluation.py
+      - models/linearsvc_model.pkl
+      - models/tfidf_vectorizer.pkl
+      - data/processed/reddit_preprocessed.csv
+    outs:
+      - reports/conf_matrix.png
+      - reports/classification_report.txt
+
+  model_registry:
+    cmd: python src/model_registry.py
+    deps:
+      - src/model_registry.py
+      - params.yaml
