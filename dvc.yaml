@@ -28,21 +28,17 @@ stages:
       - data/processed/reddit_preprocessed.csv
       - params.yaml
     params:
-      - model_building.model_type
-      - model_building.vectorizer
-      - model_building.max_features
       - model_building.model_params
+      - model_building.max_features
       - model_building.random_state
     outs:
-      - models/linearsvc_model.pkl
-      - models/tfidf_vectorizer.pkl
+      - models/linearsvc_pipeline.pkl
 
   model_evaluation:
     cmd: python src/model_evaluation.py
     deps:
       - src/model_evaluation.py
-      - models/linearsvc_model.pkl
-      - models/tfidf_vectorizer.pkl
+      - models/linearsvc_pipeline.pkl
       - data/processed/reddit_preprocessed.csv
     outs:
       - reports/conf_matrix.png
@@ -52,4 +48,4 @@ stages:
     cmd: python src/model_registry.py
     deps:
       - src/model_registry.py
-      - params.yaml
+      - models/linearsvc_pipeline.pkl
