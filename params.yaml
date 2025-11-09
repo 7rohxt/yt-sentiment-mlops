@@ -6,3 +6,12 @@ data_preprocessing:
   processed_data_path: "data/processed/reddit_preprocessed.csv"
   test_size: 0.2
   random_state: 42
+
+model_building:
+  model_type: "LinearSVC"
+  vectorizer: "tfidf"
+  max_features: 5000
+  random_state: 42
+  model_params:
+    C: 1.0
+    max_iter: 1000

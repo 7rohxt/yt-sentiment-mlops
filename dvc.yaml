@@ -21,3 +21,18 @@ stages:
     outs:
       - data/processed/reddit_preprocessed.csv
 
+  model_building:
+    cmd: python src/model_building.py
+    deps:
+      - src/model_building.py
+      - data/processed/reddit_preprocessed.csv
+      - params.yaml
+    params:
+      - model_building.model_type
+      - model_building.vectorizer
+      - model_building.max_features
+      - model_building.model_params
+      - model_building.random_state
+    outs:
+      - models/linearsvc_model.pkl
+      - models/tfidf_vectorizer.pkl
