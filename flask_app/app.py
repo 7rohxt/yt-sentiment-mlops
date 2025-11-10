@@ -19,7 +19,19 @@ from dotenv import load_dotenv
 # Setup
 load_dotenv()
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
+CORS(app, resources={r"/*": {"origins": ["chrome-extension://*", "http://127.0.0.1:5000"]}})
+
+@app.route("/get_youtube_key", methods=["GET"])
+def get_youtube_key():
+    return jsonify({"api_key": os.getenv("YOUTUBE_DATA_API_V3")})
+
+@app.after_request
+def after_request(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+    response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+    return response
 
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
 MODEL_NAME = "FinalModel"

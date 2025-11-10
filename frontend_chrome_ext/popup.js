@@ -2,7 +2,18 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
   const outputDiv = document.getElementById("output");
-  const API_KEY = 'XXXX';
+  
+  let API_KEY = null;
+  try {
+    const res = await fetch('http://127.0.0.1:5000/get_youtube_key');
+    const data = await res.json();
+    API_KEY = data.api_key;
+  } catch (err) {
+    console.error("Failed to load YouTube API key:", err);
+    outputDiv.innerHTML = "<p>Error loading YouTube API key. Please check backend.</p>";
+    return;
+  }
+
   const API_URL = 'http://127.0.0.1:5000/'; // Flask backend
 
   // Get the current tab’s URL
