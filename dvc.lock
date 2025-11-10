@@ -1,0 +1,103 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python src/data_ingestion.py
+    deps:
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: 277578b93a6debadbff40b91718d2179
+      size: 1121
+    params:
+      params.yaml:
+        data_ingestion.raw_data_path: data/raw/reddit_raw.csv
+        data_ingestion.source_url: 
+          https://raw.githubusercontent.com/Himanshu-1703/reddit-sentiment-analysis/refs/heads/main/data/reddit.csv
+    outs:
+    - path: data/raw/reddit_raw.csv
+      hash: md5
+      md5: 4144fea990fc973c5554efd820e8ae70
+      size: 6926181
+  data_preprocessing:
+    cmd: python src/data_preprocessing.py
+    deps:
+    - path: data/raw/reddit_raw.csv
+      hash: md5
+      md5: 4144fea990fc973c5554efd820e8ae70
+      size: 6926181
+    - path: src/data_preprocessing.py
+      hash: md5
+      md5: 4a40a3b4ee39faf1e38c2cd260dfde31
+      size: 1725
+    params:
+      params.yaml:
+        data_preprocessing.processed_data_path: 
+          data/processed/reddit_preprocessed.csv
+        data_preprocessing.random_state: 42
+        data_preprocessing.test_size: 0.2
+    outs:
+    - path: data/processed/reddit_preprocessed.csv
+      hash: md5
+      md5: 03103ae72bc240ee9b0577b195886c94
+      size: 5134300
+  model_building:
+    cmd: python src/model_building.py
+    deps:
+    - path: data/processed/reddit_preprocessed.csv
+      hash: md5
+      md5: 03103ae72bc240ee9b0577b195886c94
+      size: 5134300
+    - path: params.yaml
+      hash: md5
+      md5: 53939fe10b6933cc57301b61d5de87fb
+      size: 468
+    - path: src/model_building.py
+      hash: md5
+      md5: 6806941d1a96a97935b6d85e370902c9
+      size: 3139
+    params:
+      params.yaml:
+        model_building.max_features: 5000
+        model_building.model_params:
+          C: 1.0
+          max_iter: 1000
+        model_building.random_state: 42
+    outs:
+    - path: models/linearsvc_pipeline.pkl
+      hash: md5
+      md5: 0a7ef1a7388423f9cadb7b3d1261fe7d
+      size: 303296
+  model_evaluation:
+    cmd: python src/model_evaluation.py
+    deps:
+    - path: data/processed/reddit_preprocessed.csv
+      hash: md5
+      md5: 03103ae72bc240ee9b0577b195886c94
+      size: 5134300
+    - path: models/linearsvc_pipeline.pkl
+      hash: md5
+      md5: 0a7ef1a7388423f9cadb7b3d1261fe7d
+      size: 303296
+    - path: src/model_evaluation.py
+      hash: md5
+      md5: 3d5f812c06e4120e051313f42611027f
+      size: 3210
+    outs:
+    - path: reports/classification_report.txt
+      hash: md5
+      md5: af8dfd5732add91ae423cf9fde2ecd04
+      size: 389
+    - path: reports/conf_matrix.png
+      hash: md5
+      md5: c3db3556528b69e7db9f84e9adc3f91a
+      size: 20109
+  model_registry:
+    cmd: python src/model_registry.py
+    deps:
+    - path: models/linearsvc_pipeline.pkl
+      hash: md5
+      md5: 0a7ef1a7388423f9cadb7b3d1261fe7d
+      size: 303296
+    - path: src/model_registry.py
+      hash: md5
+      md5: ef2c125a8d703565c73c1f0840c8f863
+      size: 1417
